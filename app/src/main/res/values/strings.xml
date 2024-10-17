@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SubDisplayLauncherForLiberoFlip</string>
+    <string name="title_activity_app_launcher">AppLauncherActivity</string>
+    <string name="title_activity_setting">SettingActivity</string>
 </resources>

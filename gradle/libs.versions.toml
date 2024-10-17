@@ -1,5 +1,8 @@
 [versions]
+accompanistDrawablepainter = "<version>"
+accompanistDrawablepainterVersion = "0.36.0"
 agp = "8.7.0"
+composeMaterial = "1.4.0"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -10,6 +13,10 @@ activityCompose = "1.9.2"
 composeBom = "2024.04.01"
 
 [libraries]
+accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanistDrawablepainter" }
+accompanist-drawablepainter-v0360 = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanistDrawablepainterVersion" }
+androidx-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "composeMaterial" }
+androidx-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "composeMaterial" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
