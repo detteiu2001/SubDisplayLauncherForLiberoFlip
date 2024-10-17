@@ -18,6 +18,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SubDisplayLauncherForLiberoFlip"
         tools:targetApi="31">
+        <service
+            android:name=".MyBackService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+
+        </service>
+
         <activity
             android:name=".SettingActivity"
             android:exported="false"

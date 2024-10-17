@@ -7,8 +7,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.graphics.Rect
 import android.hardware.display.DisplayManager
 import android.os.Bundle
+import android.util.Log
 import android.view.Display
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -44,8 +46,9 @@ class AppLauncherActivity : ComponentActivity() {
         enableEdgeToEdge()
         val flags =
             PackageManager.MATCH_UNINSTALLED_PACKAGES or PackageManager.MATCH_DISABLED_COMPONENTS
-        val packageManager = packageManager
         val installedAppList = packageManager.getInstalledApplications(flags)
+        Log.i(TAG, "onCreate: ${packageManager.hasSystemFeature(PackageManager.FEATURE_FREEFORM_WINDOW_MANAGEMENT)}")
+        Log.i(TAG, "onCreate: ${packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)}")
 
         // ランチャーに表示されるアプリを取得
         val launcherIntent = Intent(Intent.ACTION_MAIN, null).apply {
@@ -67,19 +70,23 @@ class AppLauncherActivity : ComponentActivity() {
             )
         }
 
+        val sortedList = appDataList.sortedWith(compareBy { it.label })
+
         val displays = (getSystemService(Context.DISPLAY_SERVICE) as DisplayManager).displays
         setContent {
             SubDisplayLauncherForLiberoFlipTheme {
-                View(list = appDataList, modifier = Modifier.fillMaxSize(), this, displays)
+                View(list = sortedList, modifier = Modifier.fillMaxSize(), this, displays)
             }
         }
     }
 
     companion object {
+        private const val TAG = "AppLauncherActivity"
         @JvmStatic
         fun start(context: Context, displayManager: DisplayManager) {
             val displays = displayManager.displays
             val starter = Intent(context, AppLauncherActivity::class.java)
+            starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             val option = ActivityOptions.makeBasic()
             option.launchDisplayId = displays[displays.size - 1].displayId
             context.startActivity(starter, option.toBundle())
@@ -96,14 +103,18 @@ fun View(list: List<AppData>, modifier: Modifier = Modifier, context: Context, d
             items(list){
                 AppItem(
                     app = it,
-                    modifier = Modifier.padding(10.dp).clickable {
-                        val launchIntent = context.packageManager.getLaunchIntentForPackage(it.packageName)
-                        if(launchIntent != null) {
-                            val option = ActivityOptions.makeBasic()
-                            option.launchDisplayId = displays[displays.size - 1].displayId
-                            startActivity(context, launchIntent, option.toBundle())
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .clickable {
+                            val launchIntent =
+                                context.packageManager.getLaunchIntentForPackage(it.packageName)
+                            if (launchIntent != null) {
+                                val option = ActivityOptions.makeBasic()
+                                option.launchDisplayId = displays[displays.size - 1].displayId
+                                option.launchBounds = Rect(68, 68, 397, 397)
+                                startActivity(context, launchIntent, option.toBundle())
+                            }
                         }
-                    }
                 )
             }
         }

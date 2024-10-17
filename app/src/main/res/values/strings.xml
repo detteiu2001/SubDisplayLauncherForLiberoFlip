@@ -2,4 +2,5 @@
     <string name="app_name">SubDisplayLauncherForLiberoFlip</string>
     <string name="title_activity_app_launcher">AppLauncherActivity</string>
     <string name="title_activity_setting">SettingActivity</string>
+    <string name="accessibility_description">Libero Flipのサブディスプレイでは標準の「戻る」や「ホーム」が利用できません。そのため、デバイスを振ることで無理やり「戻る」キーのイベントを発火させます。</string>
 </resources>
