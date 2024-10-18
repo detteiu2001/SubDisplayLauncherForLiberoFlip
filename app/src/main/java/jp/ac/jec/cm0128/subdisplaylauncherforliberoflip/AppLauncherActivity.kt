@@ -16,7 +16,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,57 +27,75 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.items
+import androidx.wear.compose.material.Colors
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import jp.ac.jec.cm0128.subdisplaylauncherforliberoflip.ui.theme.SubDisplayLauncherForLiberoFlipTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class AppLauncherActivity : ComponentActivity() {
     @SuppressLint("QueryPermissionsNeeded")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val flags =
-            PackageManager.MATCH_UNINSTALLED_PACKAGES or PackageManager.MATCH_DISABLED_COMPONENTS
-        val installedAppList = packageManager.getInstalledApplications(flags)
-        Log.i(TAG, "onCreate: ${packageManager.hasSystemFeature(PackageManager.FEATURE_FREEFORM_WINDOW_MANAGEMENT)}")
-        Log.i(TAG, "onCreate: ${packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)}")
-
-        // ランチャーに表示されるアプリを取得
-        val launcherIntent = Intent(Intent.ACTION_MAIN, null).apply {
-            addCategory(Intent.CATEGORY_LAUNCHER)
-        }
-        val launcherAppList = packageManager.queryIntentActivities(launcherIntent, 0)
-            .map { it.activityInfo.applicationInfo.packageName }
-            .toSet()
-
-        val appDataList = installedAppList
-            .filter {
-                (it.flags and ApplicationInfo.FLAG_SYSTEM) == 0 || it.packageName in launcherAppList
-            }
-            .map {
-            AppData(
-                label = it.loadLabel(packageManager).toString(),
-                icon = it.loadIcon(packageManager),
-                packageName = it.packageName,
-            )
-        }
-
-        val sortedList = appDataList.sortedWith(compareBy { it.label })
-
-        val displays = (getSystemService(Context.DISPLAY_SERVICE) as DisplayManager).displays
         setContent {
             SubDisplayLauncherForLiberoFlipTheme {
-                View(list = sortedList, modifier = Modifier.fillMaxSize(), this, displays)
+                Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),contentAlignment = Alignment.Center){
+                    CircularProgressIndicator(modifier = Modifier.size(40f.dp))
+                }
+            }
+        }
+        CoroutineScope(Dispatchers.Default).launch {
+            val flags =
+                PackageManager.MATCH_UNINSTALLED_PACKAGES or PackageManager.MATCH_DISABLED_COMPONENTS
+            val installedAppList = packageManager.getInstalledApplications(flags)
+            Log.i(TAG, "onCreate: ${packageManager.hasSystemFeature(PackageManager.FEATURE_FREEFORM_WINDOW_MANAGEMENT)}")
+            Log.i(TAG, "onCreate: ${packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)}")
+
+            // ランチャーに表示されるアプリを取得
+            val launcherIntent = Intent(Intent.ACTION_MAIN, null).apply {
+                addCategory(Intent.CATEGORY_LAUNCHER)
+            }
+            val launcherAppList = packageManager.queryIntentActivities(launcherIntent, 0)
+                .map { it.activityInfo.applicationInfo.packageName }
+                .toSet()
+
+            val appDataList = installedAppList
+                .filter {
+                    (it.flags and ApplicationInfo.FLAG_SYSTEM) == 0 || it.packageName in launcherAppList
+                }
+                .map {
+                    AppData(
+                        label = it.loadLabel(packageManager).toString(),
+                        icon = it.loadIcon(packageManager),
+                        packageName = it.packageName,
+                    )
+                }
+
+            val sortedList = appDataList.sortedWith(compareBy { it.label })
+
+            val displays = (getSystemService(Context.DISPLAY_SERVICE) as DisplayManager).displays
+            runOnUiThread{
+                setContent {
+                    SubDisplayLauncherForLiberoFlipTheme {
+                        View(list = sortedList, modifier = Modifier.fillMaxSize(), this@AppLauncherActivity, displays)
+                    }
+                }
             }
         }
     }
@@ -141,6 +161,9 @@ fun AppItem(app: AppData, modifier: Modifier = Modifier){
 @Composable
 fun GreetingPreview2() {
     SubDisplayLauncherForLiberoFlipTheme {
-        View(list = emptyList(), modifier = Modifier.fillMaxSize(), AppLauncherActivity(), emptyArray())
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(modifier = Modifier.size(40f.dp))
+            }
+
     }
 }

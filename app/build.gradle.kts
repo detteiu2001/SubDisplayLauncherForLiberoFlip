@@ -62,4 +62,6 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
 
     implementation(libs.accompanist.drawablepainter.v0360)
+
+    implementation(libs.androidx.material.icons.extended)
 }
