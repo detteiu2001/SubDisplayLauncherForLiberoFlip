@@ -1,6 +1,5 @@
 package jp.ac.jec.cm0128.subdisplaylauncherforliberoflip
 
-import AppData
 import android.annotation.SuppressLint
 import android.app.ActivityOptions
 import android.content.Context
@@ -34,18 +33,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.items
-import androidx.wear.compose.material.Colors
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import jp.ac.jec.cm0128.subdisplaylauncherforliberoflip.ui.theme.SubDisplayLauncherForLiberoFlipTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class AppLauncherActivity : ComponentActivity() {
@@ -80,11 +78,13 @@ class AppLauncherActivity : ComponentActivity() {
                     (it.flags and ApplicationInfo.FLAG_SYSTEM) == 0 || it.packageName in launcherAppList
                 }
                 .map {
-                    AppData(
-                        label = it.loadLabel(packageManager).toString(),
-                        icon = it.loadIcon(packageManager),
-                        packageName = it.packageName,
-                    )
+                    async {
+                        AppData(
+                            label = it.loadLabel(packageManager).toString(),
+                            icon = it.loadIcon(packageManager),
+                            packageName = it.packageName,
+                        )
+                    }.await()
                 }
 
             val sortedList = appDataList.sortedWith(compareBy { it.label })
