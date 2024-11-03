@@ -1,5 +1,8 @@
 [versions]
+accompanistDrawablepainter = "<version>"
+accompanistDrawablepainterVersion = "0.36.0"
 agp = "8.7.0"
+composeMaterial = "1.4.0"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -8,9 +11,15 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.9.2"
 composeBom = "2024.04.01"
+materialIconsExtended = "x.y.z"
 
 [libraries]
+accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanistDrawablepainter" }
+accompanist-drawablepainter-v0360 = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanistDrawablepainterVersion" }
+androidx-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "composeMaterial" }
+androidx-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "composeMaterial" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -27,6 +36,6 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version = "2.0.21" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
