@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -47,17 +48,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class AppLauncherActivity : ComponentActivity() {
+class AppLauncherActivity : ComponentActivity()  {
+    lateinit var displays: Array<Display>
     @SuppressLint("QueryPermissionsNeeded")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val displays = (getSystemService(Context.DISPLAY_SERVICE) as DisplayManager).displays
-        if(displays.size != 2 || displays[1].displayId != (display?.displayId ?: -1)){
-            setContent{
-                AlertDialog(onDismissRequest = {}, confirmButton = {}, title = {})
-            }
-        }
+        displays = (getSystemService(Context.DISPLAY_SERVICE) as DisplayManager).displays
         setContent {
             SubDisplayLauncherForLiberoFlipTheme {
                 Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),contentAlignment = Alignment.Center){
@@ -106,6 +103,20 @@ class AppLauncherActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (displays.size != 2 || displays[1].displayId != (display?.displayId ?: -1)) {
+            android.app.AlertDialog.Builder(this)
+                .setTitle("サブ画面でない場所で開いている可能性があります")
+                .setMessage("サブディスプレイに最適化されたレイアウトのため、このまま続行するとレイアウトが崩れる可能性があります。")
+                .setPositiveButton("閉じる") { _, _ ->
+                    finish()
+                }
+                .setNegativeButton("続行する", null)
+                .show()
+        }
+    }
+
     companion object {
         private const val TAG = "AppLauncherActivity"
         @JvmStatic
@@ -114,7 +125,7 @@ class AppLauncherActivity : ComponentActivity() {
             val starter = Intent(context, AppLauncherActivity::class.java)
             starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             val option = ActivityOptions.makeBasic()
-            option.launchDisplayId = displays[displays.size - 1].displayId
+            option.launchDisplayId = displays[1].displayId
             context.startActivity(starter, option.toBundle())
         }
     }
@@ -136,7 +147,7 @@ fun View(list: List<AppData>, modifier: Modifier = Modifier, context: Context, d
                                 context.packageManager.getLaunchIntentForPackage(it.packageName)
                             if (launchIntent != null) {
                                 val option = ActivityOptions.makeBasic()
-                                option.launchDisplayId = displays[displays.size - 1].displayId
+                                option.launchDisplayId = displays[1].displayId
                                 option.launchBounds = Rect(68, 68, 397, 397)
                                 startActivity(context, launchIntent, option.toBundle())
                             }
@@ -167,9 +178,9 @@ fun AppItem(app: AppData, modifier: Modifier = Modifier){
 @Composable
 fun GreetingPreview2() {
     SubDisplayLauncherForLiberoFlipTheme {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(modifier = Modifier.size(40f.dp))
-            }
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(modifier = Modifier.size(40f.dp))
+        }
 
     }
 }

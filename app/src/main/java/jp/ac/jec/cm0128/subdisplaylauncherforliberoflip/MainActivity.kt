@@ -12,13 +12,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val displayManager = getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
-        if(display?.displayId == displayManager.displays[displayManager.displays.size - 1].displayId){
+        if(displayManager.displays.size > 1 && display?.displayId == displayManager.displays[1].displayId){
             AppLauncherActivity.start(this@MainActivity, displayManager)
             finish()
         } else {
             AlertDialog.Builder(this).run {
                 val displays = displayManager.displays
-                if (displays.size == 2) {
+                if (displays.size >= 2) {
                     setTitle("サブディスプレイランチャーを起動します")
                     setMessage("Fibero Flip本体を閉じ、サブディスプレイを操作してください")
                     setPositiveButton("OK") { _, _ ->
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                     setMessage("開発者はFibero Flipでしか動作確認をしていません")
                 }
                 setCancelable(false)
-                setNegativeButton("キャンセル") { _, _ ->
+                setNegativeButton("閉じる") { _, _ ->
                     finish()
                 }
                 show()
