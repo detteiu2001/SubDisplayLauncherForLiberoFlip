@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -51,6 +52,12 @@ class AppLauncherActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val displays = (getSystemService(Context.DISPLAY_SERVICE) as DisplayManager).displays
+        if(displays.size != 2 || displays[1].displayId != (display?.displayId ?: -1)){
+            setContent{
+                AlertDialog(onDismissRequest = {}, confirmButton = {}, title = {})
+            }
+        }
         setContent {
             SubDisplayLauncherForLiberoFlipTheme {
                 Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),contentAlignment = Alignment.Center){
@@ -89,7 +96,6 @@ class AppLauncherActivity : ComponentActivity() {
 
             val sortedList = appDataList.sortedWith(compareBy { it.label })
 
-            val displays = (getSystemService(Context.DISPLAY_SERVICE) as DisplayManager).displays
             runOnUiThread{
                 setContent {
                     SubDisplayLauncherForLiberoFlipTheme {
