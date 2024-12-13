@@ -102,7 +102,7 @@ fun SettingView(modifier: Modifier = Modifier, context: Context) {
     }
     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
         Text(
-            text = "設定",
+            text = "設定(工事中)",
             modifier = modifier,
             fontSize = 36.sp,
             fontWeight = FontWeight.Bold
@@ -111,7 +111,7 @@ fun SettingView(modifier: Modifier = Modifier, context: Context) {
             Icon(Icons.Filled.Vibration, "振動")
             Column {
                 Text(text = "「戻る」の反応する強さ")
-                Slider(value = xPower,
+                Slider(value = xPower,enabled = false,
                     onValueChange = {
                     xPower = it
 
@@ -125,7 +125,7 @@ fun SettingView(modifier: Modifier = Modifier, context: Context) {
             Icon(Icons.Filled.Vibration, "振動")
             Column {
                 Text(text = "「メニューの起動」の反応する強さ")
-                Slider(value = yPower,
+                Slider(value = yPower,enabled = false,
                     onValueChange = {
                         yPower = it
                     },
@@ -138,7 +138,7 @@ fun SettingView(modifier: Modifier = Modifier, context: Context) {
             Text("並び替え", modifier = Modifier.weight(1f))
             Button(onClick = {
                 isShowSortDialog = true
-            })
+            }, enabled = false)
             {
                 Text(currentSort.label)
             }
@@ -176,7 +176,7 @@ fun SettingView(modifier: Modifier = Modifier, context: Context) {
             Text("表示スタイル", modifier = Modifier.weight(1f))
             Button(onClick = {
                 isShowStyleDialog = true
-            })
+            }, enabled = false)
             {
                 Text(currentStyle.label)
             }
@@ -214,7 +214,7 @@ fun SettingView(modifier: Modifier = Modifier, context: Context) {
             Text("アプリ一覧にパッケージ名を表示する", modifier = Modifier.weight(1f))
             Switch(checked = isShowPackageName, onCheckedChange = {
                 isShowPackageName = it
-            }, modifier = modifier)
+            }, modifier = modifier, enabled = false)
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Filled.Accessibility, "パッケージ名")
@@ -232,7 +232,7 @@ fun SettingView(modifier: Modifier = Modifier, context: Context) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun SettingsPreview() {
     SubDisplayLauncherForLiberoFlipTheme {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             SettingView(
