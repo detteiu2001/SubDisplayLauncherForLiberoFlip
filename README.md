@@ -1,6 +1,9 @@
 # このアプリはなぁに？
 Libero Flipにおいて宝の持ち腐れとされるサブディスプレイに無理やりアプリランチャーを表示してアプリを無理やり立ち上げるソフトです。
 
+## どこでダウンロードできるの？
+現状[ベータリリースのページ](https://github.com/detteiu2001/SubDisplayLauncherForLiberoFlip/releases/tag/v0.1-beta.1)だけですね
+
 # どうやって使うの？
 起動方法は2つあります。
 ## 1. アプリランチャーから起動
