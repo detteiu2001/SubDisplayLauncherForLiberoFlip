@@ -8,6 +8,7 @@ import android.widget.SeekBar
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,13 +22,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.FormatListNumbered
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material.icons.filled.Vibration
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -77,6 +82,7 @@ class SettingActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingView(modifier: Modifier = Modifier, context: Context) {
     var isShowPackageName by remember {
@@ -100,10 +106,9 @@ fun SettingView(modifier: Modifier = Modifier, context: Context) {
     var currentStyle by remember {
         mutableStateOf(ShowStyle.LIST)
     }
-    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
+    Column(modifier = modifier.padding(start = 12.dp, end = 12.dp)) {
         Text(
             text = "設定(工事中)",
-            modifier = modifier,
             fontSize = 36.sp,
             fontWeight = FontWeight.Bold
         )
@@ -133,40 +138,23 @@ fun SettingView(modifier: Modifier = Modifier, context: Context) {
                     steps = 7)
             }
         }
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 8.dp).clickable { isShowSortDialog = true }) {
             Icon(Icons.Filled.FormatListNumbered, "パッケージ名")
             Text("並び替え", modifier = Modifier.weight(1f))
-            Button(onClick = {
-                isShowSortDialog = true
-            }, enabled = false)
-            {
-                Text(currentSort.label)
-            }
+            Text(currentSort.label)
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, "並び替え", modifier = Modifier.size(24.dp))
         }
         if(isShowSortDialog) {
-            Dialog(onDismissRequest = { }){
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    shape = RoundedCornerShape(16.dp),
-                ) {
-                    SortOrder.entries.forEach {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            RadioButton(selected = currentSort == it, onClick = {
-                                currentSort = it
-                                isShowSortDialog = false
-                            })
-                            Text(text = it.label)
-                        }
-                    }
-                    Row(modifier = Modifier.padding(12.dp)) {
-                        Spacer(modifier = Modifier.weight(1f))
-                        Button(onClick = {
+            ModalBottomSheet(onDismissRequest = {
+                isShowSortDialog = false
+            }){
+                SortOrder.entries.forEach {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        RadioButton(selected = currentSort == it, onClick = {
+                            currentSort = it
                             isShowSortDialog = false
-                        }) {
-                            Text("閉じる")
-                        }
+                        })
+                        Text(text = it.label)
                     }
                 }
             }
